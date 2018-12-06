@@ -650,8 +650,12 @@ T *HashContainer<T, A>::set(iterator &it, T *element, bool balance)
 	return old;
     }
     if (old)
+	//Append all the stuff back behind the fresh new element.
 	_rep.hashnext(element) = _rep.hashnext(old);
+	//Actually we don't want to put this just at the first, but to make everthing in order.
+	
     else {
+	//If there is nothing at here.   
 	++_rep.size;
 	if (unlikely(unbalanced()) && balance) {
 	    rehash(bucket_count() + 1);
@@ -756,6 +760,7 @@ void HashContainer<T, A>::rehash(bucket_count_type n)
 	for (T *element = old_buckets[b]; element; ) {
 	    T *next = _rep.hashnext(element);
 	    bucket_count_type new_b = bucket(_rep.hashkey(element));
+	    //Here first take all the stuff into next, then give it to the bucket.
 	    _rep.hashnext(element) = new_buckets[new_b];
 	    new_buckets[new_b] = element;
 	    element = next;
